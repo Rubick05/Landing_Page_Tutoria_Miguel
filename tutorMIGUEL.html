@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutorMiguel | Clases Particulares y Guías de Estudio</title>
+    <meta name="description"
+        content="Clases particulares y venta de guías de estudio universitarias. Aprendizaje claro, directo y a tu ritmo con Miguel.">
+
+    <!-- Tailwind CSS (vía CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración de Colores Personalizada -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f172a',
+                            blue: '#2563eb',
+                            orange: '#f97316',
+                            lime: '#84cc16',
+                            light: '#f8fafc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet CSS & JS para el mapa interactivo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Animaciones */
+        .fade-in-up {
+            animation: fadeInUp 0.9s ease-out forwards;
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 40px -8px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Hero Image — gran tamaño en escritorio */
+        .hero-img {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 20px;
+            border: 4px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: grayscale(20%);
+        }
+
+        .hero-img:hover {
+            transform: rotate(0deg) scale(1.02);
+            filter: grayscale(0%);
+        }
+
+        /* Mobile menu transitions */
+        #mobile-menu {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        #mobile-menu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        /* Responsive horarios */
+        .horario-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .horario-row span:last-child {
+            text-align: right;
+        }
+
+        /* WhatsApp button pulse */
+        @keyframes waPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
+            }
+        }
+
+        .wa-pulse {
+            animation: waPulse 2.5s infinite;
+        }
+
+        /* Sobre mí image */
+        .about-img {
+            width: 100%;
+            max-width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 640px) {
+            .about-img {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-brand-light text-slate-800 antialiased">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer"
+                    onclick="window.scrollTo({top:0,behavior:'smooth'})">
+                    <i class="fa-solid fa-book-open-reader text-brand-orange text-3xl"></i>
+                    <span class="font-bold text-2xl text-brand-navy tracking-tight">Tutor<span
+                            class="text-brand-blue">Miguel</span></span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#servicios"
+                        class="text-slate-600 hover:text-brand-orange font-medium transition">Servicios</a>
+                    <a href="#niveles" class="text-slate-600 hover:text-brand-orange font-medium transition">Niveles</a>
+                    <a href="#sobre-mi" class="text-slate-600 hover:text-brand-orange font-medium transition">Sobre
+                        Mí</a>
+                    <a href="#contacto"
+                        class="bg-brand-orange hover:bg-orange-600 text-white px-5 py-2.5 rounded-full font-bold shadow-lg shadow-orange-500/30 transition transform hover:scale-105">
+                        <i class="fa-brands fa-whatsapp mr-2"></i> Contactar
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-brand-navy hover:text-brand-orange focus:outline-none p-2"
+                        aria-label="Abrir menú">
+                        <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-100 w-full">
+            <div class="px-4 py-4 space-y-2 shadow-lg">
+                <a href="#servicios"
+                    class="block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:text-brand-orange hover:bg-orange-50 transition">
+                    <i class="fa-solid fa-chalkboard-user mr-2 text-brand-orange"></i> Servicios
+                </a>
+                <a href="#niveles"
+                    class="block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:text-brand-orange hover:bg-orange-50 transition">
+                    <i class="fa-solid fa-layer-group mr-2 text-brand-lime"></i> Niveles
+                </a>
+                <a href="#sobre-mi"
+                    class="block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:text-brand-orange hover:bg-orange-50 transition">
+                    <i class="fa-solid fa-circle-user mr-2 text-brand-blue"></i> Sobre Mí
+                </a>
+                <a href="#contacto"
+                    class="block px-4 py-3 mt-2 text-center rounded-xl text-base font-bold bg-brand-orange text-white shadow-md">
+                    <i class="fa-brands fa-whatsapp mr-2"></i> ¡Empezar Ahora!
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-36 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-blue to-slate-900 opacity-97">
+            </div>
+            <img src="https://images.unsplash.com/photo-1513258496098-36812a79d58f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+                alt="Libros y estudio" class="w-full h-full object-cover mix-blend-overlay opacity-15">
+        </div>
+
+        <div
+            class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row items-center gap-12 lg:gap-16">
+
+            <!-- Texto -->
+            <div class="w-full md:w-1/2 fade-in-up">
+                <div
+                    class="inline-block px-4 py-1.5 mb-6 rounded-full bg-brand-lime/20 border border-brand-lime/40 backdrop-blur-sm">
+                    <span class="text-brand-lime font-bold text-sm tracking-wider uppercase">
+                        <i class="fa-regular fa-clock mr-1"></i> Horarios limitados por Universidad
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+                    Entiende de verdad, <br>
+                    <span class="text-brand-orange">avanza con confianza.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">
+                    Soy estudiante universitario activo. Ofrezco clases particulares directas y <strong>guías de
+                        estudio</strong> resumidas para salvar tu semestre, prepararte para exámenes y cualquier apoyo
+                    que necesites.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <button onclick="openModal()"
+                        class="bg-brand-orange hover:bg-orange-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-orange-500/30 transition transform hover:-translate-y-1 text-center">
+                        Agendar Clase
+                    </button>
+                    <a href="#servicios"
+                        class="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-full font-semibold text-lg backdrop-blur-sm transition flex items-center justify-center gap-2">
+                        Ver Servicios y Precios <i class="fa-solid fa-arrow-down text-sm"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Imagen grande -->
+            <div class="w-full md:w-1/2 flex justify-center md:justify-end fade-in-up delay-200">
+                <div class="relative w-full flex justify-center">
+                    <!-- Destellos decorativos -->
+                    <div
+                        class="absolute -top-12 -right-8 w-32 h-32 bg-brand-lime rounded-full opacity-20 blur-2xl animate-pulse">
+                    </div>
+                    <div
+                        class="absolute -bottom-12 -left-8 w-40 h-40 bg-brand-orange rounded-full opacity-20 blur-2xl animate-pulse delay-400">
+                    </div>
+
+                    <img src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=85"
+                        alt="Tutor estudiante explicando" class="hero-img rotate-1 hover:rotate-0">
+
+                    <!-- Badge flotante -->
+                    <div class="absolute -bottom-5 -right-4 sm:-right-8 bg-white p-3 sm:p-4 rounded-xl shadow-xl flex items-center gap-3"
+                        style="animation: float 4s ease-in-out infinite;">
+                        <div class="bg-brand-blue/10 p-2 rounded-full">
+                            <i class="fa-solid fa-file-pdf text-brand-blue text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Nuevo</p>
+                            <p class="text-brand-navy font-bold text-sm">Guías PDF Disponibles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Servicios y Precios -->
+    <section id="servicios" class="py-20 bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-brand-orange font-bold tracking-wide uppercase text-sm mb-2">Mis Servicios</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-brand-navy">Invierte en tu nota, no gastes de más</h3>
+                <p class="text-slate-500 mt-4 max-w-2xl mx-auto">
+                    Elige entre clases personalizadas o material de estudio listo para usar.
+                </p>
+                <div class="w-24 h-1 bg-brand-lime mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Grid de Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+
+                <!-- Card 1: Individual -->
+                <div
+                    class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-brand-blue card-hover flex flex-col">
+                    <div class="p-8 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-user text-brand-blue text-2xl"></i>
+                            </div>
+                            <span
+                                class="bg-blue-100 text-brand-blue text-xs font-bold px-3 py-1 rounded-full uppercase">1
+                                a 1</span>
+                        </div>
+
+                        <h4 class="text-2xl font-bold text-brand-navy mb-2">Clases Individuales</h4>
+                        <p class="text-slate-600 mb-6 text-sm">Ideal si tienes dudas específicas o necesitas ir a tu
+                            propio ritmo.</p>
+
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl">
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                                <span class="text-slate-700 font-medium">
+                                    <i class="fa-solid fa-location-dot text-brand-orange mr-2"></i>Presencial
+                                </span>
+                                <span class="text-xl font-bold text-brand-navy">40 Bs<span
+                                        class="text-sm text-slate-500 font-normal">/hr</span></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-700 font-medium">
+                                    <i class="fa-solid fa-video text-brand-blue mr-2"></i>Virtual
+                                </span>
+                                <span class="text-xl font-bold text-brand-navy">35 Bs<span
+                                        class="text-sm text-slate-500 font-normal">/hr</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 mt-auto">
+                        <button onclick="openModal('Clase Individual')"
+                            class="block w-full py-3 border-2 border-brand-blue text-brand-blue font-bold rounded-lg hover:bg-brand-blue hover:text-white text-center transition">
+                            Agendar Individual
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Grupal -->
+                <div
+                    class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-brand-lime card-hover flex flex-col relative">
+                    <div
+                        class="absolute top-0 right-0 bg-brand-lime text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                        ¡AHORRA!</div>
+                    <div class="p-8 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-14 h-14 bg-lime-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-users text-brand-lime text-2xl"></i>
+                            </div>
+                            <span
+                                class="bg-lime-100 text-brand-lime text-xs font-bold px-3 py-1 rounded-full uppercase">Grupal</span>
+                        </div>
+
+                        <h4 class="text-2xl font-bold text-brand-navy mb-2">Clases Grupales</h4>
+                        <p class="text-slate-600 mb-6 text-sm">Arma tu grupo (2 a 5 personas). Más económico y aprenden
+                            juntos.</p>
+
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl">
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                                <span class="text-slate-700 font-medium">
+                                    <i class="fa-solid fa-location-dot text-brand-orange mr-2"></i>Presencial
+                                </span>
+                                <div class="text-right leading-tight">
+                                    <span class="text-xl font-bold text-brand-navy">25 Bs</span>
+                                    <span class="text-[10px] text-slate-500 block">p/persona·hr</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-700 font-medium">
+                                    <i class="fa-solid fa-video text-brand-blue mr-2"></i>Virtual
+                                </span>
+                                <div class="text-right leading-tight">
+                                    <span class="text-xl font-bold text-brand-navy">20 Bs</span>
+                                    <span class="text-[10px] text-slate-500 block">p/persona·hr</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 mt-auto">
+                        <button onclick="openModal('Clase Grupal')"
+                            class="block w-full py-3 bg-brand-lime text-white font-bold rounded-lg hover:bg-lime-600 shadow-lg shadow-lime-500/30 text-center transition">
+                            Agendar Grupo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Guías y Resúmenes -->
+                <div
+                    class="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-brand-orange card-hover flex flex-col md:col-span-2 lg:col-span-1">
+                    <div class="bg-brand-orange text-white text-center text-sm font-bold py-1">¡LO MÁS PEDIDO!</div>
+                    <div class="p-8 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-14 h-14 bg-orange-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-file-pdf text-brand-orange text-2xl"></i>
+                            </div>
+                            <span
+                                class="bg-orange-100 text-brand-orange text-xs font-bold px-3 py-1 rounded-full uppercase">Digital</span>
+                        </div>
+
+                        <h4 class="text-2xl font-bold text-brand-navy mb-2">Guías y Resúmenes</h4>
+                        <p class="text-slate-600 mb-4 text-sm">¿No tienes tiempo para clases? Compra mis resúmenes
+                            probados. Teoría clara + ejercicios clave.</p>
+
+                        <div class="bg-slate-50 p-4 rounded-xl mb-4">
+                            <p class="text-center font-bold text-brand-navy text-lg mb-2">Consultar Precio</p>
+                            <p class="text-center text-xs text-slate-500 mb-3">El precio varía según la complejidad y
+                                extensión del tema.</p>
+
+                            <div class="relative">
+                                <label for="guideTopic" class="text-xs font-bold text-slate-700 mb-1 block">¿Qué tema
+                                    buscas?</label>
+                                <input type="text" id="guideTopic" placeholder="Ej: Derivadas, Física I, Historia..."
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 mt-auto">
+                        <button onclick="consultGuide()"
+                            class="block w-full py-3 bg-brand-orange text-white font-bold rounded-lg hover:bg-orange-600 shadow-lg shadow-orange-500/30 text-center transition">
+                            <i class="fa-brands fa-whatsapp mr-1"></i> Consultar Precio por WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="text-center text-xs text-slate-400 mt-8 italic">* Los precios presenciales pueden variar según la
+                distancia si debo ir a domicilio.</p>
+        </div>
+    </section>
+
+    <!-- Sección Niveles Educativos -->
+    <section id="niveles" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-brand-blue font-bold tracking-wide uppercase text-sm mb-2">¿Para quién es?</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-brand-navy">Apoyo para todos los niveles</h3>
+                <p class="text-slate-500 mt-4 max-w-2xl mx-auto">
+                    Desde primaria hasta el examen de ingreso a la universidad — tengo el material y la
+                    experiencia para ayudarte.
+                </p>
+                <div class="w-24 h-1 bg-brand-orange mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- Card Primaria -->
+                <div
+                    class="group relative bg-gradient-to-br from-sky-50 to-blue-100 rounded-3xl p-8 overflow-hidden card-hover border border-blue-100 flex flex-col">
+                    <div
+                        class="absolute -top-6 -right-6 w-24 h-24 bg-blue-200 rounded-full opacity-40 blur-2xl group-hover:opacity-60 transition">
+                    </div>
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6">
+                        <i class="fa-solid fa-pencil text-sky-500 text-2xl"></i>
+                    </div>
+                    <span
+                        class="inline-block bg-sky-100 text-sky-600 text-xs font-bold px-3 py-1 rounded-full mb-4 self-start">Nivel
+                        Primaria</span>
+                    <h4 class="text-xl font-bold text-brand-navy mb-3">Refuerzo Escolar</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
+                        Matematica, Lenguaje, Ciencias y más. Explicaciones simples y divertidas para que los
+                        conceptos queden fijos desde la base.
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-sky-500"></i> Matemáticas básicas</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-sky-500"></i> Comprensión lectora</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-sky-500"></i> Ciencias Naturales</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-sky-500"></i> Tareas y repaso</li>
+                    </ul>
+                    <button onclick="openModal('', 'Primaria')"
+                        class="mt-auto block w-full text-center py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl transition shadow-md">
+                        Consultar disponibilidad
+                    </button>
+                </div>
+
+                <!-- Card Secundaria -->
+                <div
+                    class="group relative bg-gradient-to-br from-violet-50 to-purple-100 rounded-3xl p-8 overflow-hidden card-hover border border-purple-100 flex flex-col">
+                    <div
+                        class="absolute -top-6 -right-6 w-24 h-24 bg-purple-200 rounded-full opacity-40 blur-2xl group-hover:opacity-60 transition">
+                    </div>
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6">
+                        <i class="fa-solid fa-book text-violet-500 text-2xl"></i>
+                    </div>
+                    <span
+                        class="inline-block bg-purple-100 text-violet-600 text-xs font-bold px-3 py-1 rounded-full mb-4 self-start">Nivel
+                        Secundaria</span>
+                    <h4 class="text-xl font-bold text-brand-navy mb-3">Clases & Guías Secundaria</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
+                        Física, Química, Álgebra, Historia y más. Resúmenes probados y clases enfocadas en lo
+                        que realmente sale en tus exámenes.
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-violet-500"></i> Álgebra y Geometría</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-violet-500"></i> Física y Química</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-violet-500"></i> Historia y Geografía</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-violet-500"></i> Preparación de exámenes</li>
+                    </ul>
+                    <button onclick="openModal('', 'Secundaria')"
+                        class="mt-auto block w-full text-center py-3 bg-violet-500 hover:bg-violet-600 text-white font-bold rounded-xl transition shadow-md">
+                        Consultar disponibilidad
+                    </button>
+                </div>
+
+                <!-- Card Preuniversitario -->
+                <div
+                    class="group relative bg-gradient-to-br from-orange-50 to-amber-100 rounded-3xl p-8 overflow-hidden card-hover border border-orange-100 flex flex-col">
+                    <div
+                        class="absolute -top-6 -right-6 w-24 h-24 bg-orange-200 rounded-full opacity-40 blur-2xl group-hover:opacity-60 transition">
+                    </div>
+                    <!-- Destacado -->
+                    <div
+                        class="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                        ¡MÁS SOLICITADO!</div>
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6">
+                        <i class="fa-solid fa-graduation-cap text-brand-orange text-2xl"></i>
+                    </div>
+                    <span
+                        class="inline-block bg-orange-100 text-brand-orange text-xs font-bold px-3 py-1 rounded-full mb-4 self-start">Preuniversitario</span>
+                    <h4 class="text-xl font-bold text-brand-navy mb-3">Examen de Ingreso</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
+                        Preparación intensiva para ingresar a la universidad. Práctica con exámenes anteriores,
+                        estrategias y los temas clave que siempre aparecen.
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-brand-orange"></i> Matemáticas y Física</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-brand-orange"></i> Razonamiento lógico</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-brand-orange"></i> Exámenes anteriores resueltos</li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600"><i
+                                class="fa-solid fa-check text-brand-orange"></i> Simulacros de examen</li>
+                    </ul>
+                    <button onclick="openModal('', 'Preuniversitario')"
+                        class="mt-auto block w-full text-center py-3 bg-brand-orange hover:bg-orange-600 text-white font-bold rounded-xl transition shadow-md">
+                        Quiero prepararme
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Banner CTA inferior -->
+            <div
+                class="mt-12 bg-brand-navy rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <p class="text-brand-lime font-bold text-sm uppercase tracking-wider mb-1">¿No encuentras tu nivel?
+                    </p>
+                    <h4 class="text-white text-2xl font-bold">Cuéntame tu caso y lo vemos juntos</h4>
+                    <p class="text-slate-400 text-sm mt-1">Si necesitas algo muy específico, escríbeme y armamos un plan
+                        personalizado.</p>
+                </div>
+                <button onclick="openModal()"
+                    class="flex-shrink-0 bg-[#25D366] hover:bg-[#20bd5a] text-white px-8 py-4 rounded-full font-bold shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Consultar ahora
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Sobre Mí -->
+    <section id="sobre-mi" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
+
+                <!-- Imagen sobre mí (grande) -->
+                <div class="w-full lg:w-5/12 flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=85"
+                        alt="Estudiante universitario tutorando" class="about-img">
+                </div>
+
+                <!-- Contenido texto -->
+                <div class="lg:w-7/12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mb-6">¿Por qué estudiar conmigo?</h2>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        No soy el profesor que da clases en tu colegio. Soy un estudiante universitario activo. Sé qué
+                        temas son difíciles porque yo también los atravesé, y encontré la forma más clara y directa de
+                        entenderlos.
+                    </p>
+
+                    <div class="space-y-6 mb-10">
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 mt-1 w-10 h-10 bg-orange-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-brain text-brand-orange text-lg"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-brand-navy">Explicaciones claras, adaptadas a ti</h4>
+                                <p class="text-slate-500 text-sm mt-1">Si no entiendes a la primera, no hay apuro.
+                                    Seguimos explicando hasta que quede completamente claro.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 mt-1 w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                                <i class="fa-regular fa-file-lines text-brand-blue text-lg"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-brand-navy">Material de Apoyo al Grano</h4>
+                                <p class="text-slate-500 text-sm mt-1">Mis guías están diseñadas sin relleno. Solo lo
+                                    que necesitas para entender y aprobar.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 mt-1 w-10 h-10 bg-lime-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-graduation-cap text-brand-lime text-lg"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-brand-navy">Perspectiva de Estudiante Real</h4>
+                                <p class="text-slate-500 text-sm mt-1">Sé exactamente qué se toma en exámenes y qué no.
+                                    Te preparo para lo que de verdad importa.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horario Box -->
+                    <div class="bg-brand-navy text-white p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 -mr-8 -mt-8 w-36 h-36 bg-brand-blue rounded-full opacity-30 blur-2xl">
+                        </div>
+
+                        <h3 class="text-xl sm:text-2xl font-bold mb-5 flex items-center gap-3">
+                            <i class="fa-solid fa-clock text-brand-lime"></i> Mis Horarios Disponibles
+                        </h3>
+                        <p class="text-slate-300 mb-5 text-sm">Estos son mis rangos libres para enseñar. Sujetos a
+                            cambios por exámenes de la universidad.</p>
+
+                        <ul class="space-y-3 text-sm">
+                            <li class="border-b border-slate-700 pb-3">
+                                <div class="horario-row">
+                                    <span class="font-mono text-slate-300">Lunes <span
+                                            class="text-xs text-slate-500">(Solo virtual)</span></span>
+                                    <span class="text-green-400 font-bold font-mono">19:00 – 22:00</span>
+                                </div>
+                            </li>
+                            <li class="border-b border-slate-700 pb-3">
+                                <div class="horario-row">
+                                    <span class="font-mono text-slate-300">Martes a Jueves</span>
+                                    <span class="text-green-400 font-bold font-mono">18:00 – 21:00</span>
+                                </div>
+                            </li>
+                            <li class="border-b border-slate-700 pb-3">
+                                <div class="horario-row">
+                                    <span class="font-mono text-slate-300">Viernes</span>
+                                    <div class="text-right">
+                                        <div class="text-green-400 font-bold font-mono text-xs">11:00–14:00 <span
+                                                class="text-slate-400 font-normal">(presencial)</span></div>
+                                        <div class="text-green-400 font-bold font-mono text-xs">15:00–18:00 <span
+                                                class="text-slate-400 font-normal">(virtual)</span></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="pt-2">
+                                <div class="horario-row">
+                                    <span class="font-mono text-slate-300">Sábado y Domingo</span>
+                                    <span class="text-slate-400 font-mono text-xs">Solo emergencias (+20%)</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Contacto -->
+    <section id="contacto" class="py-20 bg-brand-blue relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-1/4 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-orange rounded-full blur-3xl"></div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Hablemos por WhatsApp</h2>
+            <p class="text-blue-100 mb-10 text-lg">
+                La forma más rápida de coordinar. Haz clic en el botón, cuéntame qué necesitas y te respondo en menos de
+                una hora.
+            </p>
+
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="flex flex-col gap-6 max-w-md mx-auto">
+
+                    <!-- Botón WhatsApp Principal -->
+                    <a href="https://wa.me/59179381414?text=Hola%20Miguel%2C%20vi%20tu%20landing%20page%20y%20me%20gustar%C3%ADa%20consultar%20sobre%20tus%20servicios."
+                        target="_blank"
+                        class="wa-pulse group flex items-center justify-center gap-4 bg-[#25D366] hover:bg-[#20bd5a] text-white py-5 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fa-brands fa-whatsapp text-4xl"></i>
+                        <div class="text-left">
+                            <span class="block text-xs font-semibold uppercase tracking-wider opacity-90">Escríbeme
+                                Ahora</span>
+                            <span class="block text-2xl font-bold">+591 79381414</span>
+                        </div>
+                    </a>
+
+                    <p class="text-sm text-slate-500">
+                        <i class="fa-solid fa-reply text-slate-400 mr-1"></i> Suelo responder en menos de 1 hora.
+                    </p>
+
+                    <div class="border-t border-gray-100 pt-6 mt-2">
+                        <p class="text-brand-navy font-semibold mb-2">¿Prefieres llamar?</p>
+                        <a href="tel:+59179381414"
+                            class="text-brand-blue hover:text-brand-orange font-bold text-lg transition">
+                            +591 79381414
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+        <p>© 2025 TutorMiguel · Clases y Guías Universitarias · Bolivia</p>
+    </footer>
+
+    <!-- Modal de Reservas -->
+    <div id="reservationModal" class="fixed inset-0 z-[60] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm modal-close-bg cursor-pointer"></div>
+        
+        <!-- Modal Content -->
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-brand-navy p-6 flex justify-between items-center text-white shrink-0">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-calendar-check text-brand-orange"></i> Detalles de la Solicitud</h3>
+                <button id="closeModalBtn" class="text-slate-300 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto">
+                <form id="reservationForm" class="space-y-5">
+                    
+                    <!-- Nombre -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre completo del estudiante(s) *</label>
+                        <input type="text" id="resName" required placeholder="Ej: Juan Pérez" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Servicio -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Servicio *</label>
+                            <select id="resService" required class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition bg-white">
+                                <option value="" disabled selected>Selecciona...</option>
+                                <option value="Clase Individual">Clase Individual</option>
+                                <option value="Clase Grupal">Clase Grupal</option>
+                                <option value="Guía de Estudio">Guía de Estudio</option>
+                            </select>
+                        </div>
+                        <!-- Nivel -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Nivel Educativo *</label>
+                            <select id="resLevel" required class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition bg-white">
+                                <option value="" disabled selected>Selecciona...</option>
+                                <option value="Primaria">Primaria</option>
+                                <option value="Secundaria">Secundaria</option>
+                                <option value="Preuniversitario">Preuniversitario</option>
+                                <option value="Universidad">Universidad</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Modalidad -->
+                    <div id="modalityBlock">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Modalidad *</label>
+                        <div class="flex gap-4">
+                            <label class="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition peer-checked:border-brand-blue">
+                                <input type="radio" name="resModality" value="Virtual" required class="accent-brand-blue w-4 h-4">
+                                <span class="text-sm font-medium text-slate-700"><i class="fa-solid fa-video text-brand-blue"></i> Virtual</span>
+                            </label>
+                            <label class="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition peer-checked:border-brand-orange">
+                                <input type="radio" name="resModality" value="Presencial" class="accent-brand-orange w-4 h-4">
+                                <span class="text-sm font-medium text-slate-700"><i class="fa-solid fa-location-dot text-brand-orange"></i> Presencial</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Ubicación (sólo si es Presencial) -->
+                    <div id="locationContainer" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Ubicación exacta para la clase presencial</label>
+                        <p class="text-xs text-slate-500 mb-3">Mueve el mapa y toca para seleccionar el punto de encuentro.</p>
+                        
+                        <div id="map" class="w-full h-48 rounded-lg mb-3 border border-gray-300 z-0 relative"></div>
+                        
+                        <div class="flex gap-2">
+                            <button type="button" id="btnLocation" class="bg-white border border-gray-300 hover:bg-gray-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 w-full justify-center shadow-sm">
+                                <i class="fa-solid fa-location-crosshairs text-brand-blue"></i> Centrar en mi ubicación actual
+                            </button>
+                        </div>
+                        <input type="hidden" id="resLocationLink" value="">
+                        <p id="locationStatus" class="text-xs text-green-600 font-semibold mt-2 hidden"><i class="fa-solid fa-check-circle"></i> Ubicación seleccionada en el mapa</p>
+                        <p id="locationError" class="text-xs text-red-500 font-semibold mt-2 hidden"><i class="fa-solid fa-triangle-exclamation"></i> No se pudo obtener la ubicación</p>
+                    </div>
+
+                    <!-- Horario -->
+                    <div id="timeBlock">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Horario a agendar *</label>
+                        <input type="datetime-local" id="resTime" required class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition bg-white">
+                    </div>
+
+                    <!-- Materia -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Materia o Tema *</label>
+                        <input type="text" id="resSubject" required placeholder="Ej: Matemáticas, Álgebra lineal..." class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition">
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2 mt-2">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> Enviar a WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        btn.addEventListener('click', () => {
+            const isOpen = menu.classList.toggle('open');
+            menuIcon.className = isOpen ? 'fa-solid fa-xmark text-2xl' : 'fa-solid fa-bars text-2xl';
+        });
+
+        // Cerrar menú al hacer clic en un enlace interno
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                menuIcon.className = 'fa-solid fa-bars text-2xl';
+            });
+        });
+
+        // Sticky Navbar (subtle style change)
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        // Badge flotante en hero
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50%       { transform: translateY(-8px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Modal & Reservation Logic
+        const modal = document.getElementById('reservationModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalCloseBgs = document.querySelectorAll('.modal-close-bg');
+        const reservationForm = document.getElementById('reservationForm');
+        
+        const resService = document.getElementById('resService');
+        const resLevel = document.getElementById('resLevel');
+        const resSubject = document.getElementById('resSubject');
+        
+        // Modality radios and Location
+        const modalityBlock = document.getElementById('modalityBlock');
+        const timeBlock = document.getElementById('timeBlock');
+        const modalityRadios = document.querySelectorAll('input[name="resModality"]');
+        const locationContainer = document.getElementById('locationContainer');
+        const btnLocation = document.getElementById('btnLocation');
+        const resLocationLink = document.getElementById('resLocationLink');
+        const locationStatus = document.getElementById('locationStatus');
+        const locationError = document.getElementById('locationError');
+        const resTime = document.getElementById('resTime');
+
+        function openModal(service = '', level = '') {
+            if(service) resService.value = service;
+            if(level) resLevel.value = level;
+            // trigger change event to hide/show fields if Guia is selected
+            resService.dispatchEvent(new Event('change'));
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+            document.body.style.overflow = '';
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modalCloseBgs.forEach(bg => bg.addEventListener('click', closeModal));
+
+        let map;
+        let marker;
+
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([-16.5000, -68.1193], 13); // Default a La Paz, Bolivia
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                map.on('click', function(e) {
+                    if (marker) {
+                        marker.setLatLng(e.latlng);
+                    } else {
+                        marker = L.marker(e.latlng).addTo(map);
+                    }
+                    resLocationLink.value = `https://www.google.com/maps?q=${e.latlng.lat},${e.latlng.lng}`;
+                    locationStatus.classList.remove('hidden');
+                });
+            }
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 200);
+        }
+
+        resService.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'Guía de Estudio') {
+                modalityBlock.classList.add('hidden');
+                timeBlock.classList.add('hidden');
+                modalityRadios.forEach(r => r.removeAttribute('required'));
+                resTime.removeAttribute('required');
+                locationContainer.classList.add('hidden');
+            } else {
+                modalityBlock.classList.remove('hidden');
+                timeBlock.classList.remove('hidden');
+                modalityRadios.forEach(r => r.setAttribute('required', 'true'));
+                resTime.setAttribute('required', 'true');
+                const checkedModality = document.querySelector('input[name="resModality"]:checked');
+                if(checkedModality && checkedModality.value === 'Presencial') {
+                    locationContainer.classList.remove('hidden');
+                    initMap();
+                }
+            }
+        });
+
+        modalityRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'Presencial') {
+                    locationContainer.classList.remove('hidden');
+                    initMap();
+                } else {
+                    locationContainer.classList.add('hidden');
+                    resLocationLink.value = '';
+                    locationStatus.classList.add('hidden');
+                    locationError.classList.add('hidden');
+                }
+            });
+        });
+
+        btnLocation.addEventListener('click', () => {
+            locationStatus.classList.add('hidden');
+            locationError.classList.add('hidden');
+            btnLocation.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-brand-blue"></i> Obteniendo...';
+            
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    resLocationLink.value = `https://www.google.com/maps?q=${lat},${lng}`;
+                    
+                    if (!marker) {
+                        marker = L.marker([lat, lng]).addTo(map);
+                    } else {
+                        marker.setLatLng([lat, lng]);
+                    }
+                    map.setView([lat, lng], 15);
+                    
+                    locationStatus.classList.remove('hidden');
+                    btnLocation.innerHTML = '<i class="fa-solid fa-location-crosshairs text-brand-blue"></i> Centrar en mi ubicación actual';
+                }, (error) => {
+                    locationError.classList.remove('hidden');
+                    btnLocation.innerHTML = '<i class="fa-solid fa-location-crosshairs text-brand-blue"></i> Centrar en mi ubicación actual';
+                });
+            } else {
+                locationError.textContent = "Navegador no soporta geolocalización.";
+                locationError.classList.remove('hidden');
+                btnLocation.innerHTML = '<i class="fa-solid fa-location-crosshairs text-brand-blue"></i> Centrar en mi ubicación actual';
+            }
+        });
+
+        reservationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('resName').value.trim();
+            const service = document.getElementById('resService').value;
+            const level = document.getElementById('resLevel').value;
+            const subject = document.getElementById('resSubject').value.trim();
+            
+            let message = `*NUEVA SOLICITUD* 🎓\n\n`;
+            message += `*Estudiante(s):* ${name}\n`;
+            message += `*Nivel:* ${level}\n`;
+            message += `*Servicio:* ${service}\n`;
+            message += `*Materia/Tema:* ${subject}\n`;
+            
+            if (service !== 'Guía de Estudio') {
+                const checkedModality = document.querySelector('input[name="resModality"]:checked');
+                const modality = checkedModality ? checkedModality.value : '';
+                const rawTime = document.getElementById('resTime').value;
+                
+                let timeString = rawTime;
+                if (rawTime) {
+                    const d = new Date(rawTime);
+                    timeString = d.toLocaleString('es-BO', {
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
+                
+                const location = document.getElementById('resLocationLink').value;
+                
+                message += `*Modalidad:* ${modality}\n`;
+                message += `*Horario a agendar:* ${timeString}\n`;
+                
+                if (modality === 'Presencial' && location) {
+                    message += `*Ubicación:* ${location}\n`;
+                }
+            } else {
+                message += `*Detalles:* Deseo adquirir la guía.\n`;
+            }
+
+            const phoneNumber = "59179381414";
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            closeModal();
+        });
+
+        // Función para consultar Guía por WhatsApp (integrado con el modal)
+        function consultGuide() {
+            const topicInput = document.getElementById('guideTopic');
+            let topic = topicInput.value.trim();
+            const resSubject = document.getElementById('resSubject');
+            if (topic) {
+                resSubject.value = topic;
+            }
+            openModal('Guía de Estudio');
+        }
+    </script>
+</body>
+
+</html>
